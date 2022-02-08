@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import Nav from "./components/Nav";
+import {Switch, Route} from "react-router-dom"
+import FeedList from "./pages/FeedList";
+import FeedItem from "./pages/FeedItem";
+import SharePage from "./pages/SharePage";
+import {connect} from "react-redux";
+import React from "react";
+import { checkAuthState } from "./store/actions/authActions";
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class  App extends React.Component {
+  componentDidMount = () => {
+    this.props.checkAuth();
+  }
+  render(){
+    return (
+      <div className="main-layout">
+        <Nav/>
+        <div className="content">
+         <Switch>
+{this.props.isAuth ? <Route path="/share" component={SharePage} /> : null }
+{!this.props.isAuth ? <Route path="/login" component={Login} />: null}
+{!this.props.isAuth ? <Route path="/signup" component={SignUp} /> : null}
+           <Route path="/:id" component={FeedItem}/>
+           <Route path="/" component={FeedList} />
+         </Switch>
+        </div>
+      </div>
+     );
+  }
+}
+const mapStateToProps = state => {
+  return {
+    isAuth: state.auth.isAuth   
+  }
 }
 
-export default App;
+const mapDispatchToProps = dispatch => {
+  return {
+    checkAuth: () => dispatch(checkAuthState())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App) ;

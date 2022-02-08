@@ -1,0 +1,7 @@
+.single_feed {
+  margin: 65px;
+  background-color: white;
+}
+.single__feed-image img {
+  width: 100%;
+}
